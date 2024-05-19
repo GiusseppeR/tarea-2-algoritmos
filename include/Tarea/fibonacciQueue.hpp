@@ -8,10 +8,12 @@ using namespace std;
 
 class FibonacciQueue : public PriorityQueue{
 private:
-    //variables
+    pair<int,int> min;
+    vector<BinomialTree> forest;
+    //cualquier método extra, hacerlo privado
 public:
     FibonacciQueue();
-    FibonacciQueue(vector<pair<int,int>> heapifyTarget);
+    void heapify(vector<pair<int,int>> target) override;
     pair<int,int> getMin() override;
     pair<int,int> extractMin() override;
     void decreaseKey(int node) override;

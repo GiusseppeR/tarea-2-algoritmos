@@ -8,10 +8,12 @@ using namespace std;
 
 class Heap : public PriorityQueue{
 private:
-    //variables
+    pair<int,int> min;
+    vector<pair<int,int>> heap;
+    //cualquier método extra, hacerlo privado
 public:
     Heap();
-    Heap(vector<pair<int,int>> heapifyTarget);
+    void heapify(vector<pair<int,int>> target) override;
     pair<int,int> getMin() override;
     pair<int,int> extractMin() override;
     void decreaseKey(int node) override;
