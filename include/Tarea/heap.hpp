@@ -12,7 +12,53 @@ using namespace std;
  */
 class Heap : public PriorityQueue{
 private:
+    int heapSize = 0;
     vector<pair<int,int>> heapData;
+
+    /**
+     * @brief Calcula el nodo padre del hijo i
+     * @param i nodo de consulta
+     * @return el indice del nodo padre
+     */
+    static int parent(int i);
+    /**
+     * @brief Calcula el nodo del hijo izquierdo
+     * @param i nodo de consulta
+     * @return el índice del nodo hijo izquierdo
+     */
+    static int left(int i);
+    /**
+     * @brief Calcula el nodo del hijo derecho
+     * @param i nodo de consulta
+     * @return el índice del nodo hijo derecho
+     */
+    static int right(int i);
+
+    /**
+     * @brief Mantiene la propiedad del heap en O(log n)
+     */
+    void maxHeapify();
+
+    /**
+     * @brief Crea un max-heap desde un input array desordenado en O(n)
+     */
+    void buildMaxHeap();
+
+    /**
+     * @brief Ordena el array en O(n log n)
+     */
+    void heapsort();
+
+    /*
+     * En genaral cada una de las funciones están hechas para crear la estructura del
+     * priority queue corre en O(log n) más el tiempo de mapeo que hay al insertar
+     * objetos en la priority queue e indices en el heap.
+     */
+    void maxHeapInsert();
+    void maxHeapExtractMax();
+    void maxHeapIncreaseKey();
+    void maxHeapMaximum();
+
 public:
     /**
      * @brief Constructor por defecto de la clase Heap
