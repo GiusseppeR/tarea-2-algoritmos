@@ -36,7 +36,7 @@ private:
     unordered_map<int, FibonacciNode*> elements; //primer parameto sera su identificador (key)para acceder con facilidad
     //cualquier método extra, hacerlo privado
     void link(FibonacciNode* x, FibonacciNode* y); //une el arbol de raiz x con el de raiz y
-    void cut(FibonacciNode* x, FibonacciNode* y ); // poda x de su padre
+    void cut(FibonacciNode* x, FibonacciNode* y ); // poda x de su padre y
 public:
     FibonacciQueue();
     void heapify(vector<pair<int,int>> target) override;
