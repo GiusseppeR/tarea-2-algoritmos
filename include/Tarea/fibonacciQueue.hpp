@@ -37,6 +37,7 @@ private:
     //cualquier método extra, hacerlo privado
     void link(FibonacciNode* x, FibonacciNode* y); //une el arbol de raiz x con el de raiz y
     void cut(FibonacciNode* x, FibonacciNode* y ); // poda x de su padre y
+    void insert(int node, int dist);
 public:
     FibonacciQueue();
     void heapify(vector<pair<int,int>> target) override;

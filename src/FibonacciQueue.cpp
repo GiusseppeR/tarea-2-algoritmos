@@ -1,9 +1,16 @@
 #include <Tarea/fibonacciQueue.hpp>
 
-FibonacciQueue::FibonacciQueue() {}
+FibonacciQueue::FibonacciQueue(): min(nullptr), c(0) {}
 
+void FibonacciQueue:: insert(int node, int dist) {
 
-void FibonacciQueue::heapify(vector<pair<int, int>> target) {}
+}
+
+void FibonacciQueue::heapify(vector<pair<int, int>> target) {
+    for(const auto& [node, dist] : target) {
+        insert(node,dist);
+    }
+}
 
 pair<int, int> FibonacciQueue::getMin() {
     if(min == nullptr) {
