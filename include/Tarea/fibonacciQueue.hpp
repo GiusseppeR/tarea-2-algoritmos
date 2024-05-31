@@ -2,6 +2,7 @@
 #define TAREALOG_FIBONACCIQUEUE_HPP
 
 #include <Tarea/priorityQueue.hpp>
+#include <Tarea/binomialTree.hpp>
 #include <vector>
 
 using namespace std;
@@ -13,10 +14,10 @@ private:
     //cualquier método extra, hacerlo privado
 public:
     FibonacciQueue();
-    void heapify(vector<pair<int,int>> target) override;
-    pair<int,int> getMin() override;
-    pair<int,int> extractMin() override;
-    void decreaseKey(int node) override;
+    void heapify(vector<pair<double, int> *> target) override;
+    pair<double, int> * getMin() override;
+    pair<double, int> * extractMin() override;
+    void decreaseKey(pair<double, int> *pair, double distance) override;
 };
 
 #endif
