@@ -12,8 +12,9 @@ using namespace std;
  */
 class Heap : public PriorityQueue{
 private:
-    int heapSize = 0;
-    vector<pair<int,int>> heapData;
+    size_t heapSize = 0;
+
+    vector<int> nodeIndex;
 
     /**
      * @brief Calcula el nodo padre del hijo i
@@ -34,10 +35,12 @@ private:
      */
     static int right(int i);
 
+    int distanceInNode(int i);
+
     /**
      * @brief Mantiene la propiedad del heap en O(log n)
      */
-    void maxHeapify();
+    void minHeapify(int i);
 
     /**
      * @brief Crea un max-heap desde un input array desordenado en O(n)
@@ -49,6 +52,8 @@ private:
      */
     void heapsort();
 
+    int find(int node);
+    int binarySearch(int node, int i, int j);
     /*
      * En genaral cada una de las funciones están hechas para crear la estructura del
      * priority queue corre en O(log n) más el tiempo de mapeo que hay al insertar
@@ -60,6 +65,7 @@ private:
     void maxHeapMaximum();
 
 public:
+    vector<pair<int,int>> heapData;
     /**
      * @brief Constructor por defecto de la clase Heap
      */
@@ -91,7 +97,7 @@ public:
      * @brief Esta función se encarga de encontrar un nodo dentro de la estructura y disminuir su valor de la distancia
      * @param node nodo a encontrar en la estructura
      */
-    void decreaseKey(int node) override;
+    void decreaseKey(int node, int k) override;
 };
 
 #endif //TAREALOG_HEAP_HPP
