@@ -3,7 +3,7 @@
 FibonacciQueue::FibonacciQueue(): min(nullptr), c(0) {}
 
 void FibonacciQueue:: insert(int node, int dist) {
-    FibonacciNode* insertNode= new FibonacciNode(node, dist);
+    FibonacciNode* insertNode=  new FibonacciNode(node, dist);
     elements[node] = insertNode;
     if(min==nullptr) {//caso vacio
         min=insertNode;
@@ -21,7 +21,7 @@ void FibonacciQueue:: insert(int node, int dist) {
     c++;
 }
 
-void FibonacciQueue::heapify(vector<pair<int, int>> target) {
+void FibonacciQueue::heapify(vector<pair<int, int>> target) { //vector de punteros de pares (dist, nodo)
     for(const auto& [node, dist] : target) {
         insert(node,dist);
     }
@@ -58,8 +58,9 @@ pair<int, int> FibonacciQueue::extractMin() {
     }
 }
 
+void FibonacciQueue::decreaseKey(int node) {
 
-void FibonacciQueue::decreaseKey(int node) {}
+}
 
 // x hijo e y padre cortaremos x de y
 void FibonacciQueue::cut(FibonacciNode* x, FibonacciNode* y) {
