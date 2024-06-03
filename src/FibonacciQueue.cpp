@@ -21,20 +21,20 @@ void FibonacciQueue:: insert(int node, int dist) {
     c++;
 }
 
-void FibonacciQueue::heapify(vector<pair<int, int>> target) { //vector de punteros de pares (dist, nodo)
+void FibonacciQueue::heapify(vector<pair<double, int>*> target) { //vector de punteros de pares (dist, nodo)
     for(const auto& [node, dist] : target) {
         insert(node,dist);
     }
 }
 
-pair<int, int> FibonacciQueue::getMin() {
+pair<double, int>* FibonacciQueue::getMin() {
     if(min == nullptr) {
         return{INFINITY, -1};
     }
     return{min->distance, min->key};
 }
 
-pair<int, int> FibonacciQueue::extractMin() {
+pair<double, int>* FibonacciQueue::extractMin() {
     FibonacciNode* currMin = min;
     if(currMin != nullptr) {
         if(currMin->child != nullptr) {
@@ -58,7 +58,7 @@ pair<int, int> FibonacciQueue::extractMin() {
     }
 }
 
-void FibonacciQueue::decreaseKey(int node) {
+void FibonacciQueue::decreaseKey(pair<double, int>* p, double newDist) {
 
 }
 
