@@ -9,7 +9,7 @@ using namespace std;
 //estructura para cada nodo
 struct FibonacciNode {
     int key;
-    int distance;
+    double distance;
     int degree;
     bool marked;
     FibonacciNode* parent;
@@ -18,7 +18,7 @@ struct FibonacciNode {
     FibonacciNode* r;
     //constructor q inicializa el nodo con la llave y distancia q se le de
     //los demas parametros son los iniciales para un nodo aislado
-    FibonacciNode(int x, int y):
+    FibonacciNode(int x, double y):
         key(x),
         distance(y),
         degree(0),
@@ -38,12 +38,15 @@ private:
     void link(FibonacciNode* x, FibonacciNode* y); //une el arbol de raiz x con el de raiz y
     void cut(FibonacciNode* x, FibonacciNode* y ); // poda x de su padre y
     void insert(int node, int dist);
+    void adjust();
+    void propagatingCut();
 public:
     FibonacciQueue();
-    void heapify(vector<pair<int,int>> target) override;
-    pair<int,int> getMin() override;
-    pair<int,int> extractMin() override;
-    void decreaseKey(int node) override;
+    void heapify(vector<pair<double,int>*> target) override;
+    pair<double,int>* getMin() override;
+    pair<double,int>* extractMin() override;
+    void decreaseKey(pair<double, int>* node, double newDist) override;
+    bool isEmpty() const override;
 };
 
 #endif
