@@ -46,7 +46,6 @@ public:
     pair<double,int>* getMin() override;
     pair<double,int>* extractMin() override;
     void decreaseKey(pair<double, int>* node, double newDist) override;
-    bool isEmpty() const override;
 };
 
 #endif

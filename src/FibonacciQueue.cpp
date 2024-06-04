@@ -186,6 +186,3 @@ void FibonacciQueue::decreaseKey(pair<double, int>* p, double newDist) {
 
 }
 
-bool FibonacciQueue::isEmpty() const {
-    return min == nullptr;
-}
