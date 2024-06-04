@@ -1,7 +1,7 @@
 #include <Tarea/heap.hpp>
 
 Heap::Heap() {}
-void Heap::heapify(vector<pair<int, int>> target) {}
-pair<int, int> Heap::getMin() {}
-pair<int, int> Heap::extractMin() {}
-void Heap::decreaseKey(int node) {}
+void Heap::heapify(vector<pair<double, int> *> target) {}
+pair<double, int> * Heap::getMin() {}
+pair<double, int> * Heap::extractMin() {}
+void Heap::decreaseKey(pair<double, int> *node, double distance) {}
