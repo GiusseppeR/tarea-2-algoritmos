@@ -35,8 +35,19 @@ pair<vector<double>, vector<int>> Graph::dijkstra(PriorityQueue &Q) {
     }
 
     Q.heapify(pairs);
-
+    cout << "Valores iniciales:" << endl;
+    cout << "Distancias:";
+    for (int i = 0; i < nodes; i++) {
+        cout << distances[i] << " ";
+    }
+    cout << endl;
+    cout << "Previos:";
+    for (int i = 0; i < nodes; i++) {
+        cout << previous[i] << " ";
+    }
+    cout << endl;
     while(!Q.isEmpty()){
+        cout << "entra" << endl;
         pair<double,int>* minPair = Q.extractMin();
         int v = minPair->second;
 
