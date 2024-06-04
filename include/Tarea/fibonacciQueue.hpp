@@ -35,11 +35,11 @@ private:
     int c; //contador para saber cuantos nodos hay en la estructura
     unordered_map<int, FibonacciNode*> elements; //primer parameto sera su identificador (key)para acceder con facilidad
     //cualquier método extra, hacerlo privado
-    void link(FibonacciNode* x, FibonacciNode* y); //une el arbol de raiz x con el de raiz y
+    void link(FibonacciNode* y, FibonacciNode* x); //une el arbol de raiz x con el de raiz y
     void cut(FibonacciNode* x, FibonacciNode* y ); // poda x de su padre y
-    void insert(int node, int dist);
+    void insert(int node, double dist);
     void adjust();
-    void propagatingCut();
+    void propagatingCut(FibonacciNode* y);
 public:
     FibonacciQueue();
     void heapify(vector<pair<double,int>*> target) override;

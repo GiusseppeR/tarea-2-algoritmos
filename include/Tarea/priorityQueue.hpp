@@ -7,9 +7,10 @@ using namespace std;
 
 class PriorityQueue {
 public:
-    virtual void heapify(vector<pair<int,int>> target);
-    virtual pair<int,int> getMin() {return {0,0};}
-    virtual pair<int,int> extractMin() {return {0,0};}
-    virtual void decreaseKey(int node) {}
+    virtual void heapify(vector<pair<double, int> *> target){}
+    virtual pair<double, int> *getMin() {return nullptr;}
+    virtual pair<double, int> *extractMin() {return nullptr;}
+    virtual void decreaseKey(pair<double, int> *pair, double distance) {}
+    virtual bool isEmpty(){return true;}
 };
 #endif //PLAYCIRCLE_PRIORITYQUEUE_H
