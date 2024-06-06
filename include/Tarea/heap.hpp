@@ -63,12 +63,6 @@ public:
     Heap();
 
     /**
-     * @brief Constructor auxiliar para inicializar el heap con el heapifyTarget
-     * @param target Vector en donde se realizará la estructura heap
-     */
-    Heap(vector<pair<double,int>*> target);
-
-    /**
      * @brief Esta función se encarga de encontrar el par minimo.
      * @return Retorna el contenido el menor par
      */
@@ -84,6 +78,8 @@ public:
      * @param node nodo a encontrar en la estructura
      */
     void decreaseKey(pair<double,int>* node, double k) override;
+    void heapify(vector<pair<double, int> *> target) override;
+    bool isEmpty() override;
     void printHeap() {
      int n = static_cast<int>(heapSize);
      if (n == 0) {
@@ -110,7 +106,7 @@ public:
      cout<<"}\n";
     }
 };
-
+/*
 class TestHeap {
 public:
  vector<pair<double,int>*> heapData;
@@ -211,5 +207,5 @@ public:
   return true;
  };
 };
-
+*/
 #endif //TAREALOG_HEAP_HPP

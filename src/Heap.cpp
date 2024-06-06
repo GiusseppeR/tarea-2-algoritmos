@@ -5,18 +5,6 @@
 #include <numeric>
 Heap::Heap() = default;
 
-Heap::Heap(vector<pair<double, int>*> target) {
-    heapData = target;
-    heapSize = target.size();
-    nodeIndex.resize(heapSize);
-    iota(nodeIndex.begin(), nodeIndex.end(), 0);
-    int i = (static_cast<int>(heapSize)/2) - 1;
-    while (i>=0) {
-        minHeapify(i);
-        i--;
-    }
-
-}
 int Heap::parent(int i) {
     return (i+1)/2 - 1;
 }
@@ -27,15 +15,17 @@ int Heap::right(int i) {
     return (i+1)*2;
 }
 int Heap::find(pair<double,int>* node) {
-    if (node->second > heapSize) {
-        throw std::runtime_error("Node out of index");
-    }
     if (nodeIndex[node->second] == -1) {
         throw std::runtime_error("Node dosen't exit in array");
     }
     return nodeIndex[node->second];
-
 }
+
+bool Heap::isEmpty() {
+    return heapSize == 0;
+}
+
+
 double Heap::metric(int i) {
     return heapData.at(i)->first;
 }
@@ -62,7 +52,17 @@ void Heap::minHeapify(int i) {
         minHeapify(smallest);
     }
 }
-
+void Heap::heapify(vector<pair<double, int> *> target) {
+    heapData = target;
+    heapSize = target.size();
+    nodeIndex.resize(heapSize);
+    iota(nodeIndex.begin(), nodeIndex.end(), 0);
+    int i = (static_cast<int>(heapSize)/2) - 1;
+    while (i>=0) {
+        minHeapify(i);
+        i--;
+    }
+}
 pair<double, int>* Heap::getMin() {
     return heapData[0];
 }
