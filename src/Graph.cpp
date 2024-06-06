@@ -35,11 +35,9 @@ pair<vector<double>, vector<int>> Graph::dijkstra(PriorityQueue &Q) {
     }
 
     Q.heapify(pairs);
-
     while(!Q.isEmpty()){
         pair<double,int>* minPair = Q.extractMin();
         int v = minPair->second;
-
         for(int u = 0; u < nodes; u++){
             if(u == v)
                 continue;
@@ -47,6 +45,7 @@ pair<vector<double>, vector<int>> Graph::dijkstra(PriorityQueue &Q) {
                 distances[u] = distances[v] + adjacencyMatrix[u][v];
                 previous[u] = v;
                 Q.decreaseKey(pairs[u], distances[u]);
+
             }
         }
     }

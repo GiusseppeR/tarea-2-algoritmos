@@ -1,23 +1,35 @@
-#ifndef TAREALOG_FIBONACCIQUEUE_HPP
-#define TAREALOG_FIBONACCIQUEUE_HPP
+#ifndef FIBONACCI_QUEUE_HPP
+#define FIBONACCI_QUEUE_HPP
 
-#include <Tarea/priorityQueue.hpp>
-#include <Tarea/binomialTree.hpp>
+#include <iostream>
+
+#include "node.hpp"
+#include "priorityQueue.hpp"
+#include <unordered_map>
 #include <vector>
+#include <list>
 
-using namespace std;
 
-class FibonacciQueue : public PriorityQueue{
+class FibonacciQueue : public PriorityQueue {
 private:
-    pair<int,int> min;
-    vector<BinomialTree> forest;
-    //cualquier método extra, hacerlo privado
+    Node* min;
+    int n;
+    unordered_map<int, Node*> nodes;  //mapa de vértices a puntero de nodo
+    void consolidate();
+    void link(Node* y, Node* x);
+    void cut(Node* x, Node* y);
+    void cascadingCut(Node* y);
+
 public:
-    FibonacciQueue();
-    void heapify(vector<pair<double, int> *> target) override;
-    pair<double, int> * getMin() override;
-    pair<double, int> * extractMin() override;
-    void decreaseKey(pair<double, int> *pair, double distance) override;
+    FibonacciQueue() : min(nullptr), n(0) {}
+    void heapify(vector<pair<double, int>*> target) override;
+    pair<double, int>* getMin() override;
+    pair<double, int>* extractMin() override;
+    void decreaseKey(pair<double, int>* p, double distance) override;
+    bool isEmpty() override {
+        return n == 0;
+    }
 };
 
-#endif
+#endif // FIBONACCI_QUEUE_HPP
+
