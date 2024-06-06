@@ -38,6 +38,7 @@ pair<vector<double>, vector<int>> Graph::dijkstra(PriorityQueue &Q) {
     while(!Q.isEmpty()){
         cout << "entra" << endl;
         pair<double,int>* minPair = Q.extractMin();
+        cout << minPair -> first << endl;
         int v = minPair->second;
 
         for(int u = 0; u < nodes; u++){

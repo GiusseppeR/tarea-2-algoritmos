@@ -24,7 +24,9 @@ public:
     pair<double, int>* getMin() override;
     pair<double, int>* extractMin() override;
     void decreaseKey(pair<double, int>* p, double distance) override;
-
+    bool isEmpty() override {
+        return n == 0;
+    }
 };
 
 #endif // FIBONACCI_QUEUE_HPP
