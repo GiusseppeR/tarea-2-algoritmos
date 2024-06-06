@@ -7,7 +7,15 @@
 
 int main(){
     Graph graph = Graph(1024, 65536);
-    cout << "Graph generated" << endl;
+    cout << "Graph test generated" << endl;
+    TestPQ Q1 = TestPQ();
+    auto result1 = graph.dijkstra(Q1);
+
+    for(int i = 0; i < 1024; i++){
+        cout << "(" << result1.first[i] << "," << result1.second[i] << ")" << endl;
+    }
+    cout << "***********************************************************************" << endl;
+    cout << "Graph fib generated" << endl;
     FibonacciQueue Q =  FibonacciQueue();
     auto result = graph.dijkstra(Q);
 

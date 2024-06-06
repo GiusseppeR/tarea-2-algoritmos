@@ -1,6 +1,8 @@
 #ifndef FIBONACCI_QUEUE_HPP
 #define FIBONACCI_QUEUE_HPP
 
+#include <iostream>
+
 #include "node.hpp"
 #include "priorityQueue.hpp"
 #include <unordered_map>
@@ -25,6 +27,8 @@ public:
     pair<double, int>* extractMin() override;
     void decreaseKey(pair<double, int>* p, double distance) override;
     bool isEmpty() override {
+        cout << "CANTIDAD" << endl;
+        cout << n << endl;
         return n == 0;
     }
 };
