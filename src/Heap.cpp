@@ -2,15 +2,15 @@
 #include <utility>
 #include <algorithm>
 #include <stdexcept>
-
+#include <numeric>
 Heap::Heap() = default;
 
-Heap::Heap(vector<pair<int, int>> heapifyTarget) {
-    heapData = heapifyTarget;
-    heapSize = heapifyTarget.size();
-    printf("%i\n",heapSize);
+Heap::Heap(vector<pair<double, int>*> target) {
+    heapData = target;
+    heapSize = target.size();
+    nodeIndex.resize(heapSize);
+    iota(nodeIndex.begin(), nodeIndex.end(), 0);
     int i = (static_cast<int>(heapSize)/2) - 1;
-    printf("%i\n",i);
     while (i>=0) {
         minHeapify(i);
         i--;
@@ -18,76 +18,81 @@ Heap::Heap(vector<pair<int, int>> heapifyTarget) {
 
 }
 int Heap::parent(int i) {
-    return i/2;
+    return (i+1)/2 - 1;
 }
 int Heap::left(int i) {
-    return i*2+1;
+    return (i+1)*2 -1;
 }
 int Heap::right(int i) {
-    return i*2+2;
+    return (i+1)*2;
 }
-int Heap::distanceInNode(int i) {
-    printf("muere?\n");
-    int distance = heapData[i].first;
-    printf("distance of node %i: %i\n",i,distance);
-    return distance;
-}
-void Heap::putPair(pair<int, int> pair) {
-    heapData.push_back(pair);
-}
+int Heap::find(pair<double,int>* node) {
+    if (node->second > heapSize) {
+        throw std::runtime_error("Node out of index");
+    }
+    if (nodeIndex[node->second] == -1) {
+        throw std::runtime_error("Node dosen't exit in array");
+    }
+    return nodeIndex[node->second];
 
+}
+double Heap::metric(int i) {
+    return heapData.at(i)->first;
+}
 void Heap::minHeapify(int i) {
     int l = left(i);
     int r = right(i);
     int smallest;
-    printf("%i,%i\n",l,r);
-    if (l <= heapSize && distanceInNode(l)<distanceInNode(i)) {
+    if (l < heapSize && metric(l)<metric(i)) {
         smallest = l;
     } else {
         smallest = i;
     }
-    if (r<=heapSize && distanceInNode(r)<distanceInNode(smallest)) {
+    if (r<heapSize && metric(r)<metric(smallest)) {
         smallest = r;
     }
     if (smallest != i) {
+        // usando nodeIndex
+        int index = heapData[i]->second;
+        int sIndex = heapData[smallest]->second;
+        nodeIndex[index] = smallest;
+        nodeIndex[sIndex] = i;
+        //
         swap(heapData[i],heapData[smallest]);
         minHeapify(smallest);
     }
 }
 
-
-
-
-pair<int, int> Heap::getMin() {
+pair<double, int>* Heap::getMin() {
     return heapData[0];
 }
-pair<int, int> Heap::extractMin() {
-    pair<int,int> min = getMin();
-    const pair<int,int> last = heapData[heapSize-1];
+
+pair<double, int>* Heap::extractMin() {
+    pair<double,int>* min = getMin();
+    if (heapSize>1) heapData[0] = heapData[heapSize-1];
+    //usando nodeIndex
+    nodeIndex[0] = heapData[0]->second;
+    nodeIndex.pop_back();
+    //
     heapData.pop_back();
-    heapData[0] = last;
+    heapSize-=1;
     minHeapify(0);
     return min;
 }
 
-int Heap::find(int node) {
-    if (node > heapSize) {
-        throw std::runtime_error("Node out of index");
-    }
-    if (nodeIndex[node] == -1) {
-        throw std::runtime_error("Node dosen't exit in array");
-    }
-    return nodeIndex[node];
-
-}
-
-void Heap::decreaseKey(int node, int k) {
+void Heap::decreaseKey(pair<double,int>* node, double k) {
     int i = find(node);
-    if (heapData[i].first < k) {
+    if (heapData[i]->first < k) {
         return ;
     }
-    heapData[i].first = k;
-    while (i>0 && heapData[parent(i)].first < heapData[i].first) {
+    heapData[i]->first = k;
+    while (i>0 && heapData[parent(i)]->first > heapData[i]->first) {
+        // usando nodeIndex
+        int index = heapData[i]->second;
+        int pIndex = heapData[parent(i)]->second;
+        nodeIndex[index] = parent(i);
+        nodeIndex[pIndex] = i;
+        //
         swap(heapData[i],heapData[parent(i)]);
         i = parent(i);
     }
