@@ -1,188 +1,182 @@
 #include <Tarea/fibonacciQueue.hpp>
+#include <cmath>
+#include <iostream>
+#include <limits>
+#include <ostream>
 
-FibonacciQueue::FibonacciQueue(): min(nullptr), c(0) {}
+void FibonacciQueue::heapify(vector<pair<double, int>*> target) {
+    for (auto p : target) { //para los valres q nos pasan
+        Node* node = new Node(p->first, p->second); //creamos un nodo con el valor de distancia y previos
+        cout << "Valores iniciales en cola:" << endl;
+        cout << "nodo distancia:";
+        cout << node->key << " ";
+        cout << endl;
+        cout << "node int ";
+        cout << node->vertex << " ";
+        cout << endl;
+        nodes[p->second] = node; //lo ponemos en la lista segun su valor
 
-void FibonacciQueue:: insert(int node, double dist) {
-    FibonacciNode* insertNode=  new FibonacciNode(node, dist);
-    elements[node] = insertNode;
-    if(min==nullptr) {//caso vacio
-        min=insertNode;
-    }
-    else {
-        insertNode->l=min;
-        insertNode->r=min->r;
-        min->r->l=insertNode;
-        min -> r=insertNode;
-        if(min->distance>insertNode->distance) {
-            //actualizamos min si es necesario
-            min=insertNode;
-        }
-    }
-    c++;
-}
-
-void FibonacciQueue::adjust() {
-    int maxDegree= log2(c) + 1;
-    vector<FibonacciNode*> nodeList(maxDegree, nullptr);
-    vector<FibonacciNode*> roots;
-    FibonacciNode* currMin=min;
-    if(currMin!=nullptr) {
-        do {
-            roots.push_back(currMin);
-            currMin=currMin->r;
-        } while(currMin!=min);
-    }
-    for(FibonacciNode* x: roots) {
-        FibonacciNode* currMin=x;
-        int i= currMin->degree;
-        while(nodeList[i] != nullptr) {
-            FibonacciNode * y= nodeList[i];
-            if(currMin->distance > y ->distance) {
-                swap(currMin, y);
-            }
-            link(y, currMin);
-            nodeList[i]= nullptr;
-            i++;
-        }
-        nodeList[i]=currMin;
-    }
-    min=nullptr;
-    for(FibonacciNode* y: nodeList) {
-        if(y != nullptr) {
-            if(min==nullptr) {
-                min=y;
-                min->l=min;
-                min->r=min;
-            }
-            else {
-                y->l=min;
-                y->r= min->r;
-                min->r->l =y;
-                min -> r= y;
-                if(y -> distance < min->distance) {
-                    min=y;
-                }
-
+        if (min == nullptr) {
+            min = node; //actualizamos el min en caso base
+        } else { //si no reordenamos
+            min->left->right = node;
+            node->left = min->left;
+            min->left = node;
+            node->right = min;
+            if (node->key < min->key) { //y chequeamos si hay q cambiar min
+                min = node;
             }
         }
     }
-
-}
-void FibonacciQueue::link(FibonacciNode* y, FibonacciNode* x) {
-    y->l->r=y->r;
-    y->r->l=y->l;
-    y->parent=x;
-    if(x->child==nullptr) {
-        x->child=y;
-        y->r=y;
-        y->l=y;
-    }
-    else {
-        y->l=x->child;
-        y->r=x->child->r;
-        x->child->r->l=y;
-        x->child->r=y;
-    }
-    x->degree++;
-    y->marked= false;
-}
-
-void FibonacciQueue::heapify(vector<pair<double, int>*> target) { //vector de punteros de pares (dist, nodo)
-    for(auto& x : target) {
-        insert(x->second,x->first);
-    }
+    n = target.size();// la ctda de nodos sera la cantidad q agregamos
 }
 
 pair<double, int>* FibonacciQueue::getMin() {
-    if(min == nullptr) {
-        return nullptr;
-    }
-    return new pair(min->distance, min->key);
+    if (min == nullptr) return nullptr; //caso vacio
+    return new std::pair<double, int>(min->key, min->vertex); //si no devolvemos valores del min
 }
 
-pair<double, int>* FibonacciQueue::extractMin() {
-    FibonacciNode* currMin = min;
-    if(currMin != nullptr) {
-        if(currMin->child != nullptr) {
-            FibonacciNode* minChild= currMin->child;
-            do {
-                FibonacciNode* next = minChild -> r;
-                minChild->l->r=minChild->r;
-                minChild->r->l = minChild-> l;
+std::pair<double, int>* FibonacciQueue::extractMin() {
+    Node* z = min; //traemos puntero del minimo
+    if (z != nullptr) { //caso no vacio
+        if (z->child != nullptr) { //si tiene hijos debemos agregarlos a las raices
+            Node* x = z->child;
+            do { //actualizamos sus der e izq y eliminamos el padre
+                Node* next = x->right;
+                min->left->right = x;
+                x->left = min->left;
+                min->left = x;
+                x->right = min;
+                x->parent = nullptr;
+                x = next;
+            } while (x != z->child);
+        }
+        //eliminamos z de las raices
+        z->left->right = z->right;
+        z->right->left = z->left;
+        //actualizamos el min y reorganizamos la lista de raices en caso de ser necesario
+        if (z == z->right) {
+            min = nullptr;
+        } else {
+            min = z->right;
+            consolidate();
+        }
 
-                minChild->l=currMin;
-                minChild->r= currMin->r;
-
-                currMin->r->l=minChild;
-                currMin->r=minChild;
-                minChild->parent=nullptr;
-                minChild=next;
-            }while(minChild != currMin->child);
-        }
-        currMin ->l->r=currMin->r;
-        currMin->r->l= currMin->l;
-        if(currMin==(currMin->r)) {
-            min=nullptr;
-        }
-        else {
-            min=currMin->r;
-            adjust();
-        }
-        c--;
+        n--; //diminuye ctda al extraer z
     }
-    int keyNode= currMin-> key;
-    double distanceNode=currMin->distance;
-    elements.erase(keyNode);
-    delete currMin;
-    return new pair(distanceNode, keyNode);
+    return new pair<double, int>(z->key, z->vertex); //devolvemos z
 }
 
+void FibonacciQueue::consolidate() {
+    int D = static_cast<int>(log2(n)) + 1;
+    std::vector<Node*> A(D, nullptr);
 
-
-// x hijo e y padre cortaremos x de y
-void FibonacciQueue::cut(FibonacciNode* x, FibonacciNode* y) {
-    if(x -> r == x) { //caso en q x es el unico hijo
-        y-> child = nullptr;
+    std::vector<Node*> rootList;
+    Node* x = min;
+    if (x != nullptr) {
+        do {
+            rootList.push_back(x);
+            x = x->right;
+        } while (x != min);
     }
-    else {
-        x->r->l = x ->l;
-        x->l->r=x->r;
-        if(y->child==x) {
-            y->child = x->r;
+
+    for (Node* w : rootList) {
+        Node* x = w;
+        int d = x->degree;
+        while (A[d] != nullptr) {
+            Node* y = A[d];
+            if (x->key > y->key) std::swap(x, y);
+            link(y, x);
+            A[d] = nullptr;
+            d++;
+        }
+        A[d] = x;
+    }
+
+    min = nullptr;
+    for (Node* y : A) {
+        if (y != nullptr) {
+            if (min == nullptr) {
+                min = y;
+                min->left = min->right = min;
+            } else {
+                min->left->right = y;
+                y->left = min->left;
+                min->left = y;
+                y->right = min;
+                if (y->key < min->key) {
+                    min = y;
+                }
+            }
         }
     }
-    y-> degree--;
-    x->l= min;
-    x->r= min->r;
-    min->r->l=x;
-    x->parent= nullptr;
-    x->marked= false;
 }
 
-void FibonacciQueue::propagatingCut(FibonacciNode* y) {
-    FibonacciNode* x = y->parent;
-    if(x!=nullptr) {
-        if(y->marked== false) {
-            y->marked=true;
-        }
-        else {
-            cut(y, x);
-            propagatingCut(x);
-        }
+void FibonacciQueue::link(Node* y, Node* x) {
+    y->left->right = y->right;
+    y->right->left = y->left;
+
+    y->parent = x;
+    if (x->child == nullptr) {
+        x->child = y;
+        y->right = y->left = y;
+    } else {
+        x->child->left->right = y;
+        y->left = x->child->left;
+        x->child->left = y;
+        y->right = x->child;
     }
+    x->degree++;
+    y->mark = false;
 }
-void FibonacciQueue::decreaseKey(pair<double, int>* p, double newDist) {
-    int key= p->second;
-    FibonacciNode* x= elements[key];
-    x->distance= newDist;
-    FibonacciNode* y=x->parent;
-    if(y != nullptr && x-> distance < y-> distance ) {
-        cut(x,y);
-        propagatingCut(y);
-    }
-    if(x->distance < min->distance) {
-        min=x;
+
+void FibonacciQueue::decreaseKey(std::pair<double, int>* p, double distance) {
+    Node* x = nodes[p->second];
+    if (distance > x->key) return;
+
+    x->key = distance;
+    Node* y = x->parent;
+
+    if (y != nullptr && x->key < y->key) {
+        cut(x, y);
+        cascadingCut(y);
     }
 
+    if (x->key < min->key) {
+        min = x;
+    }
+}
+
+void FibonacciQueue::cut(Node* x, Node* y) {
+    if (x->right == x) {
+        y->child = nullptr;
+    } else {
+        x->right->left = x->left;
+        x->left->right = x->right;
+        if (y->child == x) {
+            y->child = x->right;
+        }
+    }
+    y->degree--;
+
+    min->left->right = x;
+    x->left = min->left;
+    min->left = x;
+    x->right = min;
+
+    x->parent = nullptr;
+    x->mark = false;
+}
+
+void FibonacciQueue::cascadingCut(Node* y) {
+    Node* z = y->parent;
+    if (z != nullptr) {
+        if (!y->mark) {
+            y->mark = true;
+        } else {
+            cut(y, z);
+            cascadingCut(z);
+        }
+    }
 }
 
