@@ -14,7 +14,7 @@ class FibonacciQueue : public PriorityQueue {
 private:
     Node* min;
     int n;
-    std::unordered_map<int, Node*> nodes;  // Mapa de vértice a puntero de nodo
+    unordered_map<int, Node*> nodes;  // Mapa de vértice a puntero de nodo
     void consolidate();
     void link(Node* y, Node* x);
     void cut(Node* x, Node* y);
@@ -27,8 +27,6 @@ public:
     pair<double, int>* extractMin() override;
     void decreaseKey(pair<double, int>* p, double distance) override;
     bool isEmpty() override {
-        cout << "CANTIDAD" << endl;
-        cout << n << endl;
         return n == 0;
     }
 };
