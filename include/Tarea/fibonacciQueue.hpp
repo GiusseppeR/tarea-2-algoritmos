@@ -14,7 +14,7 @@ class FibonacciQueue : public PriorityQueue {
 private:
     Node* min;
     int n;
-    unordered_map<int, Node*> nodes;  // Mapa de vértice a puntero de nodo
+    unordered_map<int, Node*> nodes;  //mapa de vértices a puntero de nodo
     void consolidate();
     void link(Node* y, Node* x);
     void cut(Node* x, Node* y);
