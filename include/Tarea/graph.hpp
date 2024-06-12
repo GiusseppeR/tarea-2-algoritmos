@@ -14,14 +14,16 @@ class Graph {
 private:
     vector<vector<double>> adjacencyMatrix;
     mt19937 gen;
+    uniform_real_distribution<> weightGenerator;
+    uniform_int_distribution<> nodeSelector;
 
     void generateConnectedGraph(int nodes);
     void addEdges(int edges);
     string vectorToString(vector<double> target);
 public:
+    Graph(int nodes, int edges, mt19937 g);
     Graph(int nodes, int edges);
     Graph(int nodes);
-    bool isConnected();
     pair<vector<double>, vector<int>> dijkstra(PriorityQueue& Q);
     string toString();
 };

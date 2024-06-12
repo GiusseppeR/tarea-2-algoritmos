@@ -4,16 +4,25 @@
 #include <algorithm>
 #include<sstream>
 
-Graph::Graph(int nodes, int edges) {
-    random_device rd;
-    gen = mt19937(rd());
+Graph::Graph(int nodes, int edges, std::mt19937 g): adjacencyMatrix(nodes, vector<double>(nodes, 0.0)),
+                                                    weightGenerator(0.0000001, 1), nodeSelector(0, nodes - 1){
+    gen = g;
 
-    adjacencyMatrix.resize(nodes, vector<double>(nodes, 0.0));
     generateConnectedGraph(nodes);
     addEdges(edges - nodes + 1);
 }
 
-Graph::Graph(int nodes) : adjacencyMatrix(nodes, vector<double>(nodes, 0.0)) {
+Graph::Graph(int nodes, int edges): adjacencyMatrix(nodes, vector<double>(nodes, 0.0)),
+                                    weightGenerator(0.0000001, 1), nodeSelector(0, nodes - 1){
+    random_device rd;
+    gen = mt19937(rd());
+
+    generateConnectedGraph(nodes);
+    addEdges(edges - nodes + 1);
+}
+
+Graph::Graph(int nodes) : adjacencyMatrix(nodes, vector<double>(nodes, 0.0)),
+                            weightGenerator(0.0000001, 1), nodeSelector(0, nodes - 1){
     random_device rd;
     gen = mt19937(rd());
 }
@@ -50,13 +59,12 @@ pair<vector<double>, vector<int>> Graph::dijkstra(PriorityQueue &Q) {
             }
         }
     }
+    for (int i = 0; i < nodes; i++)
+        delete pairs[i];
     return {distances, previous};
 }
 
 void Graph::generateConnectedGraph(int nodes) {
-    uniform_real_distribution<> weightGenerator(0.0000001, 1);
-    uniform_int_distribution<> nodeSelector(0, nodes);
-    
     for (int i = 1; i < nodes; i++) {
         int connectedNode = nodeSelector(gen) % i;
         double weight = weightGenerator(gen);
@@ -67,9 +75,6 @@ void Graph::generateConnectedGraph(int nodes) {
 }
 
 void Graph::addEdges(int edges) {
-    uniform_real_distribution<> weightGenerator(0.0000001, 1);
-    uniform_int_distribution<> nodeSelector(0, (int) adjacencyMatrix.size() - 1);
-
     for(int i = 0; i < edges; i++){
         int u = nodeSelector(gen);
         int v = nodeSelector(gen);
@@ -93,35 +98,10 @@ string Graph::vectorToString(vector<double> target) {
 }
 string Graph::toString(){
     string result;
-    for (int i = 0; i < adjacencyMatrix.size(); i++){
-        result += vectorToString(adjacencyMatrix[i]);
+    for (const auto & i : adjacencyMatrix){
+        result += vectorToString(i);
         result += ";";
     }
     result.pop_back();
     return result;
-}
-
-bool Graph::isConnected() {
-    int nodes = (int) adjacencyMatrix.size();
-    vector<bool> visited(nodes, false);
-    vector<int> stack = {0};
-
-    while ((int)stack.size() != 0){
-        int current = stack.back();
-        stack.pop_back();
-
-        if (visited[current])
-            continue;
-
-        visited[current] = true;
-        for (int i = 0; i < nodes; i++){
-            if ((adjacencyMatrix[current][i] > 0.0) && !visited[i])
-                stack.push_back(i);
-        }
-    }
-
-    for (int i = 0; i < nodes; i++)
-        if (!visited[i]) return false;
-
-    return true;
 }
