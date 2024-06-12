@@ -123,14 +123,14 @@ void FibonacciQueue::link(Node* y, Node* x) {
 
 void FibonacciQueue::decreaseKey(pair<double, int>* p, double distance) {
     Node* x = nodes[p->second];
-    if (distance > x->key) return;
+    if (distance > x->key)
+        return;
     x->key = distance;
     Node* y = x->parent;
     if (y != nullptr && x->key < y->key) {
         cut(x, y);
         cascadingCut(y);
     }
-
     if (x->key < min->key) {
         min = x;
     }

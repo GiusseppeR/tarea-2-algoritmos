@@ -2,6 +2,7 @@
 #include <random>
 #include <iostream>
 #include <algorithm>
+#include<sstream>
 
 Graph::Graph(int nodes, int edges) {
     random_device rd;
@@ -80,6 +81,24 @@ void Graph::addEdges(int edges) {
         adjacencyMatrix[u][v] = weight;
         adjacencyMatrix[v][u] = weight;
     }
+}
+string Graph::vectorToString(vector<double> target) {
+    std::ostringstream os;
+    for(double i : target){
+        os << i << ",";
+    }
+    string result = os.str();
+    result.pop_back();
+    return result;
+}
+string Graph::toString(){
+    string result;
+    for (int i = 0; i < adjacencyMatrix.size(); i++){
+        result += vectorToString(adjacencyMatrix[i]);
+        result += ";";
+    }
+    result.pop_back();
+    return result;
 }
 
 bool Graph::isConnected() {
