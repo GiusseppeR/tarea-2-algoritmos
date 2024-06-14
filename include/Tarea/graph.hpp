@@ -13,6 +13,8 @@ using namespace std;
 class Graph {
 private:
     vector<vector<double>> adjacencyMatrix;
+    vector<vector<int>> connections;
+
     mt19937 gen;
     uniform_real_distribution<> weightGenerator;
     uniform_int_distribution<> nodeSelector;

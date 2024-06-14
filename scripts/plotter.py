@@ -7,23 +7,23 @@ from matplotlib.lines import Line2D
 
 def plot_times(nodes, n_edges, times_heap, times_fq, filename):
     plt.figure(figsize=(8, 6))
-    plt.plot(times_heap, n_edges, label='Heap', marker='o', linestyle='-')
-    plt.plot(times_fq, n_edges, label='Fibonacci Queue', marker='o', linestyle='-')
-
-    slope_heap, intercept_heap = np.polyfit(times_heap, n_edges, 1)
-    regression_line_heap = np.array(times_heap) * slope_heap + intercept_heap
-    plt.plot(times_heap, regression_line_heap, label='Heap Regression Line', linestyle='--')
-
-    slope_fq, intercept_fq = np.polyfit(times_fq, n_edges, 1)
-    regression_line_fq = np.array(times_fq) * slope_fq + intercept_fq
-    plt.plot(times_fq, regression_line_fq, label='Fibonacci Queue Regression Line', linestyle='--')
-
-    plt.xlabel('Execution Time [s]')
-    plt.ylabel("Number of edges")
-    plt.title(f"Execution times for {nodes} nodes")
+    
+    plt.plot(n_edges, times_heap, label='Heap', marker='o', linestyle='-')
+    plt.plot(n_edges, times_fq, label='Fibonacci Queue', marker='o', linestyle='-')
+    
+    slope_heap, intercept_heap = np.polyfit(n_edges, times_heap, 1)
+    regression_line_heap = np.array(n_edges) * slope_heap + intercept_heap
+    plt.plot(n_edges, regression_line_heap, label='Heap Regression Line', linestyle='--')
+    
+    slope_fq, intercept_fq = np.polyfit(n_edges, times_fq, 1)
+    regression_line_fq = np.array(n_edges) * slope_fq + intercept_fq
+    plt.plot(n_edges, regression_line_fq, label='Fibonacci Queue Regression Line', linestyle='--')
+    
+    plt.xlabel('Number of edges')
+    plt.ylabel('Execution Time [s]')
+    plt.title(f'Execution times for {nodes} nodes')
     plt.legend()
     plt.grid(True)
-    plt.gca().xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: '{:.2f}'.format(x)))
     plt.savefig(filename)
 
 def plot_graph(adjacency_matrix, mst):
@@ -70,7 +70,13 @@ def main():
     fq_times = [float(x) for x in data["fq_mean_times"].split("+")]
     
     for i in range(len(node_amounts)):
-        plot_times(node_amounts[i],edge_amounts,heap_times[i*8:(i+1)*8],fq_times[i*8:(i+1)*8], f"times_{i}.pdf")
+        if i == 0:
+            plot_times(node_amounts[i], edge_amounts[:3], heap_times[:3], fq_times[:3], f"times_{i}.pdf")
+        else:
+            start_index = 3 + (i - 1) * 7
+            end_index = start_index + 7
+            plot_times(node_amounts[i], edge_amounts[start_index:end_index], heap_times[start_index:end_index], fq_times[start_index:end_index], f"times_{i}.pdf")
+
 
 if __name__ == "__main__":
     main()

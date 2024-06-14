@@ -5,15 +5,14 @@
 #include<sstream>
 
 Graph::Graph(int nodes, int edges): adjacencyMatrix(nodes, vector<double>(nodes, 0.0)),
-                                    weightGenerator(0.0000001, 1), nodeSelector(0, nodes - 1){
+                                    weightGenerator(0.0000001, 1), nodeSelector(0, nodes - 1),
+                                    connections(nodes, vector<int>()){
     random_device rd;
     gen = mt19937(rd());
 
     generateConnectedGraph(nodes);
     addEdges(edges - nodes + 1);
 }
-
-Graph::Graph() = default;
 
 pair<vector<double>, vector<int>> Graph::dijkstra(PriorityQueue &Q) {
     int nodes = (int) adjacencyMatrix.size();
@@ -31,14 +30,16 @@ pair<vector<double>, vector<int>> Graph::dijkstra(PriorityQueue &Q) {
     while(!Q.isEmpty()){
         pair<double,int> minPair = Q.extractMin();
         int v = minPair.second;
-        for(int u = 0; u < nodes; u++){
-            if(u == v)
+        for(int i = 0; i < connections[v].size(); i++){
+            int u = connections[v][i];
+
+            if(distances[u] <= (distances[v] + adjacencyMatrix[u][v]) )
                 continue;
-            if(distances[u] > (distances[v] + adjacencyMatrix[u][v]) && adjacencyMatrix[u][v] != 0){
-                distances[u] = distances[v] + adjacencyMatrix[u][v];
-                previous[u] = v;
-                Q.decreaseKey(u, distances[u]);
-            }
+
+            distances[u] = distances[v] + adjacencyMatrix[u][v];
+            previous[u] = v;
+            Q.decreaseKey(u, distances[u]);
+
         }
     }
 
@@ -53,20 +54,27 @@ void Graph::generateConnectedGraph(int nodes) {
 
         adjacencyMatrix[i][connectedNode] = weight;
         adjacencyMatrix[connectedNode][i] = weight;
+
+        connections[i].push_back(connectedNode);
+        connections[connectedNode].push_back(i);
     }
 }
 
 void Graph::addEdges(int edges) {
     for(int i = 0; i < edges; i++){
         int u = nodeSelector(gen);
-        int v = nodeSelector(gen);
+        int v;
 
-        if (u == v || adjacencyMatrix[u][v] != 0)
-            continue;
+        do {
+            v = nodeSelector(gen);
+        } while(u == v || adjacencyMatrix[u][v] != 0);
 
         double weight = weightGenerator(gen);
         adjacencyMatrix[u][v] = weight;
         adjacencyMatrix[v][u] = weight;
+
+        connections[u].push_back(v);
+        connections[v].push_back(u);
     }
 }
 string Graph::vectorToString(vector<double> target) {

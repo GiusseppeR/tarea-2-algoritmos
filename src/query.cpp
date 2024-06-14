@@ -27,6 +27,9 @@ void generate_experiment() {
         inputSizes.push_back(v);
 
         for (int j : j_values) {
+            if(i == 10 && j > 18)
+                continue;
+
             int e = 1 << j;
             numberOfEdges.push_back(e);
 
