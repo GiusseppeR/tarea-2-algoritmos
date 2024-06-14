@@ -1,13 +1,11 @@
 #include <Tarea/fibonacciQueue.hpp>
 #include <cmath>
-#include <iostream>
-#include <limits>
 #include <ostream>
 
-void FibonacciQueue::heapify(vector<pair<double, int>*> target) {
+void FibonacciQueue::heapify(vector<pair<double, int>> target) {
     for (auto p : target) { //para los valres q nos pasan
-        Node* node = new Node(p->first, p->second); //creamos un nodo con el valor de distancia y previos
-        nodes[p->second] = node; //lo ponemos en la lista segun su valor
+        Node* node = new Node(p.first, p.second); //creamos un nodo con el valor de distancia y previos
+        nodes[p.second] = node; //lo ponemos en la lista segun su valor
         if (min == nullptr) {
             min = node; //actualizamos el min en caso base
         } else { //si no reordenamos
@@ -20,15 +18,16 @@ void FibonacciQueue::heapify(vector<pair<double, int>*> target) {
             }
         }
     }
-    n = target.size();// la ctda de nodos sera la cantidad q agregamos
+    n = (int) target.size();// la ctda de nodos sera la cantidad q agregamos
 }
 
-pair<double, int>* FibonacciQueue::getMin() {
-    if (min == nullptr) return nullptr; //caso vacio
-    return new pair<double, int>(min->key, min->vertex); //si no devolvemos valores del min
+pair<double, int> FibonacciQueue::getMin() {
+    if (min == nullptr)
+        return {-1,-1}; //caso vacio
+    return {min->key, min->vertex}; //si no devolvemos valores del min
 }
 
-pair<double, int>* FibonacciQueue::extractMin() {
+pair<double, int> FibonacciQueue::extractMin() {
     Node* z = min; //traemos puntero del minimo
     if (z != nullptr) { //caso no vacio
         if (z->child != nullptr) { //si tiene hijos debemos agregarlos a las raices
@@ -55,7 +54,7 @@ pair<double, int>* FibonacciQueue::extractMin() {
         }
         n--; //diminuye ctda al extraer z
     }
-    return new pair<double, int>(z->key, z->vertex); //devolvemos z
+    return {z->key, z->vertex}; //devolvemos z
 }
 
 void FibonacciQueue::consolidate() {
@@ -118,8 +117,8 @@ void FibonacciQueue::link(Node* y, Node* x) {
     y->mark = false;
 }
 
-void FibonacciQueue::decreaseKey(pair<double, int>* p, double distance) {
-    Node* x = nodes[p->second];
+void FibonacciQueue::decreaseKey(int p, double distance) {
+    Node* x = nodes[p];
     if (distance > x->key)
         return;
     x->key = distance;

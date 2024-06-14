@@ -4,14 +4,6 @@
 #include <algorithm>
 #include<sstream>
 
-Graph::Graph(int nodes, int edges, std::mt19937 g): adjacencyMatrix(nodes, vector<double>(nodes, 0.0)),
-                                                    weightGenerator(0.0000001, 1), nodeSelector(0, nodes - 1){
-    gen = g;
-
-    generateConnectedGraph(nodes);
-    addEdges(edges - nodes + 1);
-}
-
 Graph::Graph(int nodes, int edges): adjacencyMatrix(nodes, vector<double>(nodes, 0.0)),
                                     weightGenerator(0.0000001, 1), nodeSelector(0, nodes - 1){
     random_device rd;
@@ -21,52 +13,42 @@ Graph::Graph(int nodes, int edges): adjacencyMatrix(nodes, vector<double>(nodes,
     addEdges(edges - nodes + 1);
 }
 
-Graph::Graph(int nodes) : adjacencyMatrix(nodes, vector<double>(nodes, 0.0)),
-                            weightGenerator(0.0000001, 1), nodeSelector(0, nodes - 1){
-    random_device rd;
-    gen = mt19937(rd());
-}
+Graph::Graph() = default;
 
 pair<vector<double>, vector<int>> Graph::dijkstra(PriorityQueue &Q) {
     int nodes = (int) adjacencyMatrix.size();
-
-    vector<double> distances(nodes);
+    vector<double> distances(nodes, INFINITY);
     vector<int> previous(nodes, -1);
 
     distances[0] = 0;
-    for (int i = 1; i < nodes; i++)
-        distances[i] = INFINITY;
 
-    vector<pair<double, int>*> pairs = {};
-
-    for (int i = 0; i < nodes; i++){
-        auto* p = new pair<double, int>(distances[i], i);
-        pairs.push_back(p);
-    }
+    vector<pair<double, int>> pairs(nodes);
+    for(int i = 0; i < nodes; i++)
+        pairs[i] = {distances[i],i};
 
     Q.heapify(pairs);
+
     while(!Q.isEmpty()){
-        pair<double,int>* minPair = Q.extractMin();
-        int v = minPair->second;
+        pair<double,int> minPair = Q.extractMin();
+        int v = minPair.second;
         for(int u = 0; u < nodes; u++){
             if(u == v)
                 continue;
             if(distances[u] > (distances[v] + adjacencyMatrix[u][v]) && adjacencyMatrix[u][v] != 0){
                 distances[u] = distances[v] + adjacencyMatrix[u][v];
                 previous[u] = v;
-                Q.decreaseKey(pairs[u], distances[u]);
-
+                Q.decreaseKey(u, distances[u]);
             }
         }
     }
-    for (int i = 0; i < nodes; i++)
-        delete pairs[i];
+
     return {distances, previous};
 }
 
 void Graph::generateConnectedGraph(int nodes) {
     for (int i = 1; i < nodes; i++) {
-        int connectedNode = nodeSelector(gen) % i;
+        uniform_int_distribution<> nodeRange(0,i-1);
+        int connectedNode = nodeRange(gen);
         double weight = weightGenerator(gen);
 
         adjacencyMatrix[i][connectedNode] = weight;

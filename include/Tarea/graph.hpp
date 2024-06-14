@@ -21,9 +21,8 @@ private:
     void addEdges(int edges);
     string vectorToString(vector<double> target);
 public:
-    Graph(int nodes, int edges, mt19937 g);
     Graph(int nodes, int edges);
-    Graph(int nodes);
+    Graph();
     pair<vector<double>, vector<int>> dijkstra(PriorityQueue& Q);
     string toString();
 };

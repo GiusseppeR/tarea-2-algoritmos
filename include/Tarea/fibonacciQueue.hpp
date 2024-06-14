@@ -22,10 +22,10 @@ private:
 
 public:
     FibonacciQueue() : min(nullptr), n(0) {}
-    void heapify(vector<pair<double, int>*> target) override;
-    pair<double, int>* getMin() override;
-    pair<double, int>* extractMin() override;
-    void decreaseKey(pair<double, int>* p, double distance) override;
+    void heapify(vector<pair<double, int>> target) override;
+    pair<double, int> getMin() override;
+    pair<double, int> extractMin() override;
+    void decreaseKey(int p, double distance) override;
     bool isEmpty() override {
         return n == 0;
     }
