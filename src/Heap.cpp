@@ -57,7 +57,6 @@ void Heap::heapify(vector<pair<double, int>> target) {
     nodeIndex.resize(heapSize);
     iota(nodeIndex.begin(), nodeIndex.end(), 0);
     int i = (static_cast<int>(heapSize)/2) - 1;
-
     while (i >= 0) {
         minHeapify(i);
         i--;

@@ -39,7 +39,6 @@ pair<vector<double>, vector<int>> Graph::dijkstra(PriorityQueue &Q) {
             distances[u] = distances[v] + adjacencyMatrix[u][v];
             previous[u] = v;
             Q.decreaseKey(u, distances[u]);
-
         }
     }
 

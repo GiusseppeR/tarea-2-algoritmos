@@ -8,7 +8,7 @@ void FibonacciQueue::heapify(vector<pair<double, int>> target) {
         nodes[p.second] = node; //lo ponemos en la lista segun su valor
         if (min == nullptr) {
             min = node; //actualizamos el min en caso base
-        } else { //si no reordenamos
+        } else { //si no insertamos como raiz
             min->left->right = node;
             node->left = min->left;
             min->left = node;
@@ -59,40 +59,40 @@ pair<double, int> FibonacciQueue::extractMin() {
 
 void FibonacciQueue::consolidate() {
     int size = (int)ceil((log2(n))) + 1;
-    vector<Node*> A(size, nullptr);
-    vector<Node*> rootList;
+    vector<Node*> A(size, nullptr); //vector q podra contener todos los gardos posibles
+    vector<Node*> rootList; //inicializar lista raices
     Node* x = min;
-    if (x != nullptr) {
+    if (x != nullptr) { //llenar la lista de raices
         do {
             rootList.push_back(x);
             x = x->right;
-        } while (x != min);
+        } while (x != min); //recorremos desde el minimo hacia las demas raices
     }
-    for (Node* root : rootList) {
-        Node* x = root;
-        int d = x->degree;
-        while (A[d] != nullptr) {
+    for (Node* root : rootList) { //verificamos para cada raiz
+        Node* w = root;
+        int d = w->degree;
+        while (A[d] != nullptr) { //si ya hay otros arboles guardados de igual grado debemos unir
             Node* y = A[d];
-            if (x->key > y->key) swap(x, y);
-            link(y, x);
-            A[d] = nullptr;
-            d++;
+            if (w->key > y->key) swap(w, y);
+            link(y, w); //juntamos
+            A[d] = nullptr; //se resetea lo unido
+            d++; //seguir
         }
-        A[d] = x;
+        A[d] = w; //agregar nuev valor
     }
     min = nullptr;
-    for (Node* y : A) {
-        if (y != nullptr) {
-            if (min == nullptr) {
+    for (Node* y : A) { //reconstruir raices
+        if (y != nullptr) { //para los efectivamente guardados agregaremos a la nueva lista
+            if (min == nullptr) { //caso base
                 min = y;
                 min->left = min->right = min;
             }
-            else {
+            else { //si no agregamos reajustando los parametros
                 min->left->right = y;
                 y->left = min->left;
                 min->left = y;
                 y->right = min;
-                if (y->key < min->key) {
+                if (y->key < min->key) { //actualizar min de ser necesario
                     min = y;
                 }
             }
@@ -101,39 +101,42 @@ void FibonacciQueue::consolidate() {
 }
 
 void FibonacciQueue::link(Node* y, Node* x) {
+    //eliminar de raices a y
     y->left->right = y->right;
     y->right->left = y->left;
+    //asignarlo como hijo de x
     y->parent = x;
-    if (x->child == nullptr) {
+    if (x->child == nullptr) {//caso insertar como unico hijo
         x->child = y;
         y->right = y->left = y;
-    } else {
+    } else { //si no unirlo a los demas
         x->child->left->right = y;
         y->left = x->child->left;
         x->child->left = y;
         y->right = x->child;
     }
+    //ajustar parametros
     x->degree++;
     y->mark = false;
 }
 
 void FibonacciQueue::decreaseKey(int p, double distance) {
-    Node* x = nodes[p];
-    if (distance > x->key)
+    Node* x = nodes[p]; //extraer nodo correspondiente
+    if (distance > x->key) //caso donde no tiene sentido disminuir
         return;
-    x->key = distance;
+    x->key = distance; //si no actualizamos la distancia
     Node* y = x->parent;
-    if (y != nullptr && x->key < y->key) {
+    if (y != nullptr && x->key < y->key) { //si es necesario reorganizar la lista lo hacemos
         cut(x, y);
         cascadingCut(y);
     }
-    if (x->key < min->key) {
+    if (x->key < min->key) { //actualizar minimo si es el caso
         min = x;
     }
 }
 
 void FibonacciQueue::cut(Node* x, Node* y) {
-    if (x->right == x) {
+    if (x->right == x) { //caso base para nodo solo
         y->child = nullptr;
     }
     else {
@@ -143,8 +146,8 @@ void FibonacciQueue::cut(Node* x, Node* y) {
             y->child = x->right;
         }
     }
-    y->degree--;
-    min->left->right = x;
+    y->degree--; //actualizar ctda de nodos conetados
+    min->left->right = x; //agregar a lista de nodos y resetear valores
     x->left = min->left;
     min->left = x;
     x->right = min;
@@ -156,9 +159,9 @@ void FibonacciQueue::cascadingCut(Node* y) {
     Node* z = y->parent;
     if (z != nullptr) {
         if (!y->mark) {
-            y->mark = true;
+            y->mark = true; //primera vez cortando
         }
-        else {
+        else { //si el nodo fue cortado previamente entonces debemos separarlo de su padre
             cut(y, z);
             cascadingCut(z);
         }
