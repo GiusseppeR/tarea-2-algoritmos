@@ -71,14 +71,14 @@ void FibonacciQueue::consolidate() {
     for (Node* root : rootList) { //verificamos para cada raiz
         Node* w = root;
         int d = w->degree;
-        while (A[d] != nullptr) { //si ya hay otros arboles guardados de igual grado debemos unir
-            Node* y = A[d];
+        while (A[d] != nullptr) { //si ya hay otros arboles guardados de igual grado d debemos unir
+            Node* y = A[d]; //Extraemos el previamente guardado
             if (w->key > y->key) swap(w, y);
             link(y, w); //juntamos
-            A[d] = nullptr; //se resetea lo unido
-            d++; //seguir
+            A[d] = nullptr; //se pone en nulo el arbol con grado d q eliminamos
+            d++; //actualizar grado en el que guardaremos
         }
-        A[d] = w; //agregar nuev valor
+        A[d] = w; //agregar nuevo valor con grado correspondiente
     }
     min = nullptr;
     for (Node* y : A) { //reconstruir raices
