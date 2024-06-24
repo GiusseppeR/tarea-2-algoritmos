@@ -31,3 +31,10 @@ A continuación se muestra cómo configurar CLion:
 
 - La configuración por defecto debería ser suficiente.
 
+## Información adicional
+
+Opcionalmente (no garantizado), se puede compilar la tarea usando solo el CMake. En una carpeta "build" dentro del directorio, hacer:
+```
+cmake ..
+cmake --build .
+```
